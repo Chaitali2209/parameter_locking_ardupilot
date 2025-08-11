@@ -23,6 +23,7 @@
 /// @brief  The AP variable store.
 #include "AP_Param.h"
 
+
 #include <cmath>
 #include <string.h>
 
@@ -2580,6 +2581,37 @@ void AP_Param::set_defaults_from_table(const struct defaults_table_struct *table
  */
 bool AP_Param::set_by_name(const char *name, float value)
 {
+    
+     const char* protected_params[] = {
+        "SERVO1_FUNCTION",
+        "SERVO2_FUNCTION",
+        "ARMING_CHECK",
+        nullptr
+    };
+
+    // If this param is protected, check if ADMIN_UNLOCK is set
+    for (int i = 0; protected_params[i] != nullptr; i++) {
+        if (strcmp(name, protected_params[i]) == 0) {
+            // Use internal API to look up the parameter by name
+            enum ap_var_type unlock_type;
+            AP_Param *admin_param = find("ADMIN_UNLOCK", &unlock_type);
+
+            if (admin_param != nullptr) {
+                int32_t val = ((AP_Int32 *)admin_param)->get();  // Cast and get value
+                if (val != 2209) {
+                    hal.console->printf("ADMIN_UNLOCK = 0. Cannot modify %s\n", name);
+                    return false;
+                }
+            } else {
+                // fallback: if param not found, deny access just to be safe
+                hal.console->printf("ADMIN_UNLOCK not found. Cannot modify %s\n", name);
+                return false;
+            }
+        }
+    }
+
+
+
     enum ap_var_type vtype;
     AP_Param *vp = find(name, &vtype);
     if (vp == nullptr) {

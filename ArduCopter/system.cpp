@@ -22,6 +22,8 @@ void Copter::init_ardupilot()
 #endif
 
     BoardConfig.init();
+    g.admin_unlock.load();
+
 #if HAL_MAX_CAN_PROTOCOL_DRIVERS
     can_mgr.init();
 #endif

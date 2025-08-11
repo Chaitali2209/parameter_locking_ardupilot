@@ -14,6 +14,9 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+// #include "Copter.h"
+
+
 #include <AP_HAL/AP_HAL.h>
 
 #include "GCS.h"
@@ -290,6 +293,36 @@ void GCS_MAVLINK::handle_param_set(const mavlink_message_t &msg)
         send_parameter_value(key, var_type, old_value);
         return;
     }
+    
+
+    // Block protected param changes unless ADMIN_UNLOCK = 1
+    const char* protected_params[] = {
+        "SERVO1_FUNCTION",
+        "SERVO2_FUNCTION",
+        "ARMING_CHECK",
+        nullptr
+    };
+
+    for (int i = 0; protected_params[i] != nullptr; i++) {
+        if (strcmp(key, protected_params[i]) == 0) {
+            enum ap_var_type unlock_type;
+            AP_Param *admin_param = AP_Param::find("ADMIN_UNLOCK", &unlock_type);
+            if (admin_param != nullptr) {
+                int32_t val = ((AP_Int32 *)admin_param)->get();
+                if (val != 2209) {
+                    hal.console->printf("[BLOCKED] ADMIN_UNLOCK=0. Cannot modify %s\n", key);
+                    gcs().send_text(MAV_SEVERITY_WARNING, "Param write denied (%s)", key);
+                    return;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
 
     // set the value
     vp->set_float(packet.param_value, var_type);
