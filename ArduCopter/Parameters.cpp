@@ -35,6 +35,13 @@ const AP_Param::Info Copter::var_info[] = {
     // @ReadOnly: True
     GSCALAR(format_version, "FORMAT_VERSION",   0),
 
+    // @Param: ADMIN_UNLOCK
+    // @DisplayName: Admin Unlock
+    // @Description: Enables admin mode for protected parameter edits
+    // @Values: 0:Locked,1:Unlocked
+    // @User: Advanced
+    GSCALAR(admin_unlock, "ADMIN_UNLOCK", 0),
+
     // @Param: SYSID_THISMAV
     // @DisplayName: MAVLink system ID of this vehicle
     // @Description: Allows setting an individual MAVLink system id for this vehicle to distinguish it from others on the same network
@@ -1161,6 +1168,8 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // ID 62 is reserved for the SHOW_... parameters from the Skybrush fork at
     // https://github.com/skybrush-io/ardupilot
 
+    
+
     AP_GROUPEND
 };
 
@@ -1208,10 +1217,10 @@ const AP_Param::GroupInfo ParametersG2::var_info2[] = {
     // @User: Advanced
     AP_GROUPINFO("SURFTRAK_TC", 5, ParametersG2, surftrak_tc, 1.0),
 
-    // ID 62 is reserved for the AP_SUBGROUPEXTENSION
-
     AP_GROUPEND
 };
+
+
 
 /*
   constructor for g2 object
@@ -1272,6 +1281,8 @@ ParametersG2::ParametersG2(void)
     AP_Param::setup_object_defaults(this, var_info);
     AP_Param::setup_object_defaults(this, var_info2);
 }
+
+
 
 /*
   This is a conversion table from old parameter values to new
@@ -1359,6 +1370,7 @@ void Copter::load_parameters(void)
     AP_Param::set_frame_type_flags(AP_PARAM_FRAME_COPTER);
 
 }
+
 
 // handle conversion of PID gains
 void Copter::convert_pid_parameters(void)

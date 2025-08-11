@@ -383,13 +383,14 @@ public:
         // 254,255: reserved
 
         k_param_vehicle = 257, // vehicle common block of parameters
-
+        k_param_admin_unlock,
         // the k_param_* space is 9-bits in size
         // 511: reserved
     };
 
     AP_Int16        format_version;
 
+    AP_Int32                 admin_unlock;
     // Telemetry control
     //
     AP_Int16        sysid_this_mav;
@@ -461,6 +462,8 @@ public:
     AP_Float        fs_ekf_thresh;
     AP_Int16        gcs_pid_mask;
 
+     // Add this line here
+
 #if MODE_THROW_ENABLED == ENABLED
     AP_Enum<ModeThrow::PreThrowMotorState>         throw_motor_start;
 #endif
@@ -476,6 +479,8 @@ public:
 #if MODE_ACRO_ENABLED == ENABLED
     // Acro parameters
     AP_Int8                 acro_trainer;
+    
+
 #endif
 
     // Note: keep initializers here in the same order as they are declared
@@ -691,6 +696,8 @@ public:
     AP_Float pldp_range_finder_minimum_m;
     AP_Float pldp_delay_s;
     AP_Float pldp_descent_speed_ms;
+    // Admin parameter unlock code
+
 };
 
 extern const AP_Param::Info        var_info[];
