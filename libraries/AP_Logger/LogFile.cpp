@@ -104,7 +104,12 @@ bool AP_Logger_Backend::Write_Format_Units(const struct LogStructure *s)
   write a parameter to the log
  */
 bool AP_Logger_Backend::Write_Parameter(const char *name, float value, float default_val)
-{
+{   
+    // Skip logging admin unlock param
+    if (strcmp(name, "ADMIN_UNLOCK") == 0) {
+        return true;  // Pretend it succeeded
+    }
+
     struct log_Parameter pkt{
         LOG_PACKET_HEADER_INIT(LOG_PARAMETER_MSG),
         time_us : AP_HAL::micros64(),
@@ -126,6 +131,10 @@ bool AP_Logger_Backend::Write_Parameter(const AP_Param *ap,
 {
     char name[16];
     ap->copy_name_token(token, &name[0], sizeof(name), true);
+    // Skip logging admin unlock param
+    if (strcmp(name, "ADMIN_UNLOCK") == 0) {
+        return true;  // Skip logging, pretend it was successful
+    }
     return Write_Parameter(name, ap->cast_to_float(type), default_val);
 }
 

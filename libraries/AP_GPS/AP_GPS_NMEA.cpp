@@ -782,12 +782,16 @@ void AP_GPS_NMEA::parse_versiona_field(uint16_t term_number, const char *term)
     switch (term_number) {
     case 10:
         strncpy(v.type, _term, sizeof(v.type)-1);
+        v.type[sizeof(v.type) - 1] = '\0';
         break;
     case 11:
         strncpy(v.version, _term, sizeof(v.version)-1);
+        v.version[sizeof(v.version)-1] = '\0';  // null terminate manually
+
         break;
     case 15:
         strncpy(v.build_date, _term, sizeof(v.build_date)-1);
+        v.build_date[sizeof(v.build_date) - 1] = '\0';
         break;
     }
 #pragma GCC diagnostic pop

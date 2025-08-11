@@ -878,6 +878,10 @@ void AP_Logger::Write_Mode(uint8_t mode, const ModeReason reason)
 
 void AP_Logger::Write_Parameter(const char *name, float value)
 {
+    //Skip logging ADMIN_UNLOCK for security
+    if (strcmp(name, "ADMIN_UNLOCK") == 0) {
+        return;
+    }
     FOR_EACH_BACKEND(Write_Parameter(name, value, quiet_nanf()));
 }
 
