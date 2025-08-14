@@ -129,7 +129,7 @@ bool AP_Logger_Backend::Write_Parameter(const AP_Param *ap,
                                             enum ap_var_type type,
                                             float default_val)
 {
-    char name[16];
+    char name[AP_MAX_NAME_SIZE + 1]; 
     ap->copy_name_token(token, &name[0], sizeof(name), true);
     // Skip logging admin unlock param
     if (strcmp(name, "ADMIN_UNLOCK") == 0) {
